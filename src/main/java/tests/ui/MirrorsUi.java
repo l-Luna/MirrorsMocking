@@ -35,8 +35,12 @@ public class MirrorsUi{
 		
 		Draw.color(Palette.accent);
 		Lines.stroke(5);
-		for(Laser laser : room.getLasers())
-			Lines.line((laser.originX + laser.direction.xOff * .5f) * pixels + w / 2f, (laser.originY + laser.direction.yOff * .5f) * -pixels + h / 2f, (laser.originX + laser.direction.xOff * (laser.length + .5f)) * pixels + w / 2f, (laser.originY + laser.direction.yOff * (laser.length + .5f)) * -pixels + h / 2f);
+		for(Laser laser : room.getLasers()){
+			float v = laser.length + .5f;
+			if(laser.length != laser.blockHitLength)
+				v -= .5;
+			Lines.line((laser.originX + laser.direction.xOff * .5f) * pixels + w / 2f, (laser.originY + laser.direction.yOff * .5f) * -pixels + h / 2f, (laser.originX + laser.direction.xOff * v) * pixels + w / 2f, (laser.originY + laser.direction.yOff * v) * -pixels + h / 2f);
+		}
 		for(MirrorComponent component : room.getComponents()){
 			Draw.color(Palette.accent);
 			Lines.stroke(5);

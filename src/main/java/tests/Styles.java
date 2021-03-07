@@ -15,7 +15,6 @@ public class Styles{
 	
 	public static void registerAssets(){
 		AtlasStitcher.addImageForLoading("crude_round_patch.9");
-		AtlasStitcher.addImageForLoading("strife/strife_menubg.9");
 	}
 	
 	public static void loadStyles(){
@@ -31,11 +30,10 @@ public class Styles{
 		}};
 		
 		strifeTextButton = new TextButton.TextButtonStyle(){{
-			up = Core.atlas.drawable("strife_menubg");
-			//down = Core.atlas.drawable("crude_round_patch");
+			up = Core.atlas.drawable("crude_round_patch");
 			
 			font = Fonts.regular;
-			fontColor = Color.white;
+			fontColor = Color.black;
 			disabledFontColor = Color.black;
 		}};
 		

@@ -1,7 +1,9 @@
 package tests.mirrors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MirrorRoom{
 	
@@ -16,6 +18,7 @@ public class MirrorRoom{
 			component.step(this);
 		// handle propagating all lasers
 		// first extend all lasers until they hit a block or are 24 long
+		int maxLaserLength = 0;
 		for(Laser laser : lasers){
 			int len = 24;
 			int startX = laser.originX + laser.direction.xOff;
@@ -32,13 +35,51 @@ public class MirrorRoom{
 					else if(laser.direction == Direction.DOWN && component.y >= startY)
 						len = Math.min(len, component.y - startY);
 				}
-			laser.length = len;
+			laser.length = 0;
+			laser.blockHitLength = len;
+			maxLaserLength = Math.max(maxLaserLength, laser.blockHitLength);
 		}
 		// then handle laser intra-collision
-		// -----|
-		//      |
-		// -----|
-		//      |
+		// until all lasers are blocked by other lasers or have reached their max length from blocks:
+		//  - extend each laser, and add a LaserTrace
+		//  - if there's already a LaserTrace there, we have an intersection:
+		//    - add eachother to blockedBy, and remove that laser's further traces
+		//    - if that laser blocked other lasers, they should be unblocked
+		record Coord(int x, int y){}
+		
+		Map<Coord, List<Laser>> traces = new HashMap<>();
+		boolean anyUnblockedLaser = true;
+		while(anyUnblockedLaser){
+			for(Laser laser : lasers){
+				anyUnblockedLaser = false;
+				// try to extend the laser if not blocked
+				if(laser.blockedBy.isEmpty()){
+					anyUnblockedLaser = true;
+					// check if there's already a trace there
+					Coord myPos = new Coord(laser.originX + laser.length * laser.direction.xOff, laser.originY + laser.length * laser.direction.yOff);
+					boolean blocking = traces.containsKey(myPos) && !traces.get(myPos).isEmpty();
+					// if there *is* already one, I've been blocked
+					if(blocking){
+						// block the other lasers and myself
+						for(Laser trace : traces.get(myPos)){
+							laser.blockedBy.add(trace);
+							trace.blockedBy.add(laser);
+							// cut the others to length
+							trace.length = trace.direction.horizontal ? (myPos.x() - trace.originX) / trace.direction.xOff :  (myPos.y() - trace.originY) / trace.direction.yOff;
+							// and unblock any lasers they're blocking that aren't also on this block
+							for(Laser unblocking : trace.blockedBy)
+								if(unblocking.length * unblocking.direction.xOff + unblocking.originX != myPos.x()
+										&& unblocking.length * unblocking.direction.yOff + unblocking.originY != myPos.y())
+									unblocking.blockedBy.remove(trace);
+						}
+					}else if(laser.length < laser.blockHitLength)
+						laser.length++;
+					// and add my own anyways
+					traces.computeIfAbsent(myPos, __ -> new ArrayList<>()).add(laser);
+				}
+			}
+		}
+		
 		// then update blocks to tell them "hey you're powered"
 		for(MirrorComponent component : components)
 			component.poweredBy.clear();
