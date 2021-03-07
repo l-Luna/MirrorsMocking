@@ -2,10 +2,10 @@ package tests.ui;
 
 import arc.Core;
 import arc.scene.Group;
-import arc.scene.ui.Button;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
+import arc.util.Disposable;
 import tests.mirrors.Direction;
 import tests.mirrors.MirrorComponent;
 import tests.mirrors.MirrorRoom;
@@ -14,11 +14,9 @@ import tests.mirrors.components.Emitter;
 import tests.mirrors.components.Redirector;
 import tests.mirrors.components.Splitter;
 
-import java.util.Set;
-
 import static tests.Styles.strifeTextButton;
 
-public class MirrorsMenuFragment implements Menu, ClickListener{
+public class MirrorsMenuFragment implements Menu, ClickListener, Disposable{
 	
 	MirrorRoom room = new MirrorRoom();
 	MirrorsUi ui = new MirrorsUi(room, this);
@@ -70,7 +68,7 @@ public class MirrorsMenuFragment implements Menu, ClickListener{
 	}
 	
 	public void dispose(){
-	
+		ui.dispose();
 	}
 	
 	public MirrorRoom getRoom(){

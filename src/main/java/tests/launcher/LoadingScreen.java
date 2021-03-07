@@ -22,7 +22,6 @@ public class LoadingScreen implements Disposable{
 	private FxProcessor fx = new FxProcessor(Pixmap.Format.rgba8888, 2, 2, false, true);
 	private Random random = new Random();
 	
-	//
 	private int progress = 0;
 	private int stages = 5;
 	

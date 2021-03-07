@@ -1,6 +1,10 @@
 package tests.ui;
 
 import arc.Core;
+import arc.fx.FxProcessor;
+import arc.fx.filters.BloomFilter;
+import arc.graphics.Color;
+import arc.graphics.Pixmap;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import tests.Palette;
@@ -13,7 +17,11 @@ import tests.mirrors.components.Emitter;
 import tests.mirrors.components.Redirector;
 import tests.mirrors.components.Splitter;
 
+import static arc.Core.graphics;
+
 public class MirrorsUi{
+	
+	private FxProcessor fx = new FxProcessor(Pixmap.Format.rgba8888, 2, 2, false, true);
 	
 	MirrorRoom room;
 	MirrorsMenuFragment menu;
@@ -23,24 +31,29 @@ public class MirrorsUi{
 	public MirrorsUi(MirrorRoom room, MirrorsMenuFragment menu){
 		this.room = room;
 		this.menu = menu;
+		fx.addEffect(new BloomFilter());
 	}
 	
 	public void render(int w, int h){
 		// treat 1 space as 20 pixels
-		Draw.color(Palette.grid);
-		Lines.stroke(1);
-		for(int x = -11; x < 12; x++)
-			for(int y = -11; y < 12; y++)
-				Lines.square(x * pixels + w / 2f, y * -pixels + h / 2f, pixels / 2f);
+		if(fx.getWidth() != graphics.getWidth() || fx.getHeight() != graphics.getHeight())
+			fx.resize(graphics.getWidth(), graphics.getHeight());
+		fx.begin();
+		Core.graphics.clear(Color.black);
 		
 		Draw.color(Palette.accent);
 		Lines.stroke(5);
 		for(Laser laser : room.getLasers()){
-			float v = laser.length + .5f;
-			if(laser.length != laser.blockHitLength)
-				v -= .5;
-			Lines.line((laser.originX + laser.direction.xOff * .5f) * pixels + w / 2f, (laser.originY + laser.direction.yOff * .5f) * -pixels + h / 2f, (laser.originX + laser.direction.xOff * v) * pixels + w / 2f, (laser.originY + laser.direction.yOff * v) * -pixels + h / 2f);
+			float v = laser.length - .5f;
+			if(!laser.blockedBy.isEmpty())
+				v += .5;
+			Lines.line((laser.originX - laser.direction.xOff * .5f) * pixels + w / 2f, (laser.originY - laser.direction.yOff * .5f) * -pixels + h / 2f, (laser.originX + laser.direction.xOff * v) * pixels + w / 2f, (laser.originY + laser.direction.yOff * v) * -pixels + h / 2f);
 		}
+		
+		fx.end();
+		fx.applyEffects();
+		fx.render();
+		
 		for(MirrorComponent component : room.getComponents()){
 			Draw.color(Palette.accent);
 			Lines.stroke(5);
@@ -150,5 +163,9 @@ public class MirrorsUi{
 				Lines.line(compX - pixels / 5f - 1, compY - pixels / 5f, compX - 1, compY);
 			}
 		}
+	}
+	
+	public void dispose(){
+		fx.dispose();
 	}
 }
