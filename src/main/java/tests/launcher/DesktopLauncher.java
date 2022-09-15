@@ -2,15 +2,17 @@ package tests.launcher;
 
 import arc.ApplicationCore;
 import arc.ApplicationListener;
+import arc.Files;
 import arc.assets.AssetManager;
 import arc.assets.Loadable;
+import arc.assets.loaders.FileHandleResolver;
 import arc.assets.loaders.MusicLoader;
 import arc.assets.loaders.SoundLoader;
-import arc.assets.loaders.resolvers.InternalFileHandleResolver;
 import arc.audio.Music;
 import arc.audio.Sound;
 import arc.backend.sdl.SdlApplication;
 import arc.backend.sdl.SdlConfig;
+import arc.files.Fi;
 import arc.freetype.FreeTypeFontGenerator;
 import arc.freetype.FreeTypeFontGeneratorLoader;
 import arc.freetype.FreetypeFontLoader;
@@ -79,10 +81,11 @@ public class DesktopLauncher extends ApplicationCore{
 		
 		batch = new SortedSpriteBatch();
 		assets = new AssetManager();
-		assets.setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
-		assets.setLoader(Music.class, new MusicLoader(new InternalFileHandleResolver()));
-		assets.setLoader(Font.class, new FreetypeFontLoader(new InternalFileHandleResolver()));
-		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(new InternalFileHandleResolver()));
+		FileHandleResolver resolver = s -> new Fi(s, Files.FileType.internal);
+		assets.setLoader(Sound.class, new SoundLoader(resolver));
+		assets.setLoader(Music.class, new MusicLoader(resolver));
+		assets.setLoader(Font.class, new FreetypeFontLoader(resolver));
+		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		
 		atlas = TextureAtlas.blankAtlas();
 		

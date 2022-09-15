@@ -40,7 +40,7 @@ public class AtlasStitcher implements Loadable{
 	
 	public void loadSync(){
 		// Split into multiple atlases later
-		PixmapPacker packer = new PixmapPacker(2048, 2048, Pixmap.Format.rgba8888, 2, true);
+		PixmapPacker packer = new PixmapPacker(2048, 2048, 0, false);
 		AtomicInteger total = new AtomicInteger();
 		Time.mark();
 		

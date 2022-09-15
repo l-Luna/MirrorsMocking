@@ -35,7 +35,7 @@ public class MainMenuBackground{
 				// pick a start point "randomly"
 				int start = random.nextInt(w);
 				// pick a start time "randomly"
-				float elapsed = Time.globalTime() - random.nextInt(2000);
+				float elapsed = Time.globalTime - random.nextInt(2000);
 				// pick a rotation "randomly"
 				int rotation = random.nextInt(360) - 180;
 				// and pick number of sides "randomly"

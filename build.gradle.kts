@@ -5,7 +5,7 @@ plugins {
 
 group = "tests"
 version = "0.0"
-var archash: String = "bfac70a18ab9158efefcd36f3ff43738c96733a0"
+var archash: String = "829da164e7"
 
 repositories {
     mavenCentral()
@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    testCompile("junit", "junit", "4.12")
+    testImplementation("junit", "junit", "4.12")
     // yes I know I shouldn't get *every* module
     // I'll optimize this later though
     implementation("com.github.Anuken:Arc:$archash")

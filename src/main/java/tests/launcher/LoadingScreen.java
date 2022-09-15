@@ -47,11 +47,11 @@ public class LoadingScreen implements Disposable{
 		float l = 15;
 		for(int i = 0; i < l; i++){
 			Draw.color(Palette.accent, Color.black, .7f + .3f * ((l - i) / l));
-			Fill.poly(Mathf.sin((Time.globalTime() + i) / 12f) * dist + w / 2, Mathf.cos((Time.globalTime() + i) / 12f) * dist + h / 2, 4, 45, Time.globalTime());
+			Fill.poly(Mathf.sin((Time.globalTime + i) / 12f) * dist + w / 2, Mathf.cos((Time.globalTime + i) / 12f) * dist + h / 2, 4, 45, Time.globalTime);
 		}
 		for(int i = 0; i < l; i++){
 			Draw.color(Palette.accent, Color.black, .7f + .3f * ((l - i) / l));
-			Fill.poly(Mathf.sin((Time.globalTime() + i) / 12f + Mathf.pi) * dist + w / 2, Mathf.cos((Time.globalTime() + i) / 12f + Mathf.pi) * dist + h / 2, 4, 45, Time.globalTime());
+			Fill.poly(Mathf.sin((Time.globalTime + i) / 12f + Mathf.pi) * dist + w / 2, Mathf.cos((Time.globalTime + i) / 12f + Mathf.pi) * dist + h / 2, 4, 45, Time.globalTime);
 		}
 		
 		random.setSeed(413);
@@ -61,7 +61,7 @@ public class LoadingScreen implements Disposable{
 			// pick a start point "randomly"
 			int start = random.nextInt((int)w);
 			// pick a start time "randomly"
-			float elapsed = Time.globalTime() - random.nextInt(6000) + 6000;
+			float elapsed = Time.globalTime - random.nextInt(6000) + 6000;
 			// and pick a rotation "randomly"
 			int rotation = random.nextInt(360);
 			// draw the polygon
