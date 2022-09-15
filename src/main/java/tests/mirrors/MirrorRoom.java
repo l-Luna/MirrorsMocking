@@ -54,7 +54,7 @@ public class MirrorRoom{
 					anyUnblockedLaser = true;
 					// check if there's already a trace there
 					Coord myPos = new Coord(laser.originX + laser.length * laser.direction.xOff, laser.originY + laser.length * laser.direction.yOff);
-					boolean blocking = traces.containsKey(myPos) && !traces.get(myPos).isEmpty();
+					boolean blocking = traces.containsKey(myPos) && !traces.get(myPos).isEmpty() && (!traces.get(myPos).contains(laser) || traces.get(myPos).size() > 1);
 					// if there *is* already one, I've been blocked
 					if(blocking){
 						// block the other lasers and myself
@@ -72,16 +72,16 @@ public class MirrorRoom{
 									toRemove.computeIfAbsent(at, coord -> new ArrayList<>()).add(trace);
 								}
 								// and unblock any lasers they're blocking that aren't also on this block
-								for(Laser unblocking : trace.blockedBy)
+								for(Laser unblocking : new ArrayList<>(trace.blockedBy))
 									// prevents three-way collisions from crashing
 									if(unblocking.length * unblocking.direction.xOff + unblocking.originX != myPos.x()
-											&& unblocking.length * unblocking.direction.yOff + unblocking.originY != myPos.y()){
+									|| unblocking.length * unblocking.direction.yOff + unblocking.originY != myPos.y()){
 										unblocking.blockedBy.remove(trace);
 										trace.blockedBy.remove(unblocking);
 									}
 							}
 						}
-						toRemove.forEach((coord, lasers1) -> lasers1.forEach(laser1 -> traces.get(coord).remove(laser1)));
+						toRemove.forEach((coord, del) -> traces.get(coord).removeAll(del));
 					}else if(laser.length < laser.blockHitLength)
 						laser.length++;
 					// and add my own anyways

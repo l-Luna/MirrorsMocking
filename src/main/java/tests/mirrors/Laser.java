@@ -27,11 +27,11 @@ public class Laser{
 		Laser laser = (Laser)o;
 		return originX == laser.originX &&
 				originY == laser.originY &&
-				length == laser.length &&
+				/*length == laser.length &&*/
 				direction == laser.direction;
 	}
 	
 	public int hashCode(){
-		return Objects.hash(originX, originY, length, direction);
+		return Objects.hash(originX, originY, /*length,*/ direction);
 	}
 }
